@@ -1,0 +1,10 @@
+[project]
+name = "doukutsu-translator"
+version = "0.1.0"
+description = "Automated tool for translating Cave Story into Latin with LLMs."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=2.14.0",
+    "pydantic>=2.12.5",
+]
