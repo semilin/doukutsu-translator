@@ -33,7 +33,21 @@ cargo r write --translation_file latin.json --output_dir translation
 ```
 
 Then, recursively copy the resulting `translation/` directory into
-your CaveStory/data directory, and you're good to go.
+your `CaveStory/data` directory, and you're good to go.
+
+## Logistics
+It cost me about $0.90 to produce a full game translation with
+gemini-3-flash-preview on OpenRouter. I tried other models, but
+anything at a similar price point was unable to even return properly
+formatted JSON. Probably a prompting issue, but I don't care enough to
+adapt it.
+
+## Modification
+This project is trivially modifiable for other purposes. Just edit
+translate.py to use different LLM endpoints. Prompting merely needs to
+be adjusted slightly for translation to other languages (but note that
+you'll need to make modifications to the game font in order to display
+other characters).
 
 ## License
 GPLv3, copyright semilin

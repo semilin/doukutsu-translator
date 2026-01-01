@@ -1,5 +1,4 @@
 use anyhow::{Result, anyhow};
-use encoding_rs::*;
 use glob::glob;
 use logos::Logos;
 use serde::{Deserialize, Serialize};
@@ -207,11 +206,6 @@ fn dialogues_from_tsc(text: &str) -> Vec<Vec<Speech>> {
     while let Some(Ok(token)) = lex.next() {
         if matches!(token, Token::Message) {
             if !speech.is_empty() {
-                // println!(
-                //     "Speech: {:?}\nOri. Span: {}",
-                //     &speech,
-                //     &text[span_start..span_end]
-                // );
                 dialogue.push(Speech {
                     character: character.clone(),
                     text: speech.clone(),
@@ -261,8 +255,8 @@ fn dump(data_dir: PathBuf, output: PathBuf) -> Result<()> {
     )?)
     .flatten()
     {
-        let bytes = &tsc_decode(std::fs::read(&path)?);
-        let (text, _, _) = WINDOWS_1252.decode(bytes);
+        let bytes = tsc_decode(std::fs::read(&path)?);
+        let text = String::from_utf8_lossy(&bytes);
         let dialogues = dialogues_from_tsc(&text);
         if !dialogues.is_empty() {
             let data = FileData {
@@ -270,8 +264,6 @@ fn dump(data_dir: PathBuf, output: PathBuf) -> Result<()> {
                 original: text.to_string(),
                 path,
             };
-            // println!("{data:?}");
-            // println!("{:?}", &reconstructed);
             files.push(data);
         }
     }
@@ -315,7 +307,7 @@ fn parse_path(s: &std::ffi::OsStr) -> Result<std::path::PathBuf, &'static str> {
 
 fn help() -> Result<()> {
     Err(anyhow!(
-        "Usage: doukutsu-translator [OPTIONS] COMMAND
+        "Usage: doukutsu-extractor [OPTIONS] COMMAND
 
 OPTIONS
   --translation_file FILE     Path to the JSON translation file (required).
@@ -331,8 +323,8 @@ COMMANDS
                               and write them to the output directory.
 
 EXAMPLES
-  doukutsu-translator --translation_file texts.json --game_data ./CaveStory/data dump
-  doukutsu-translator --translation_file texts.json --output_dir ./out write"
+  doukutsu-extractor --translation_file texts.json --game_data ./CaveStory/data dump
+  doukutsu-extractor --translation_file texts.json --output_dir ./out write"
     ))
 }
 
