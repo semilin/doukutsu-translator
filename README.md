@@ -4,3 +4,36 @@
 Automated tool for translating Cave Story into Latin with LLMs, for
 fun and as an experiment in language pedagogy. Handcoded, not
 vibecoded!
+
+## Structure
+This tool has two components:
+- a Rust tool (doukutsu-extractor) that can both extract .tsc data
+  from Cave Story into a JSON dialogue file as well as convert that
+  file back into .tsc files readily usable for the game.
+- a Python tool (translate.py) that takes this dialogue file and
+  translates each dialogue into Latin.
+
+## Usage
+The project can be used thus:
+```sh
+git clone https://github.com/semilin/doukutsu-translator
+cd doukutsu-translator
+cargo r dump --translation_file english.json --game_data ~/games/CaveStory/data/ # replace with your own directory
+
+# it's generally good practice to use a venv,
+# but if your environment isn't managed by your package manager
+# and you don't care about keeping it clean, then this is fine.
+pip install -r requirements.txt
+
+export OPENROUTER_API_KEY=yourkey
+
+python translate.py t english.json latin.json
+
+cargo r write --translation_file latin.json --output_dir translation
+```
+
+Then, recursively copy the resulting `translation/` directory into
+your CaveStory/data directory, and you're good to go.
+
+## License
+GPLv3, copyright semilin
